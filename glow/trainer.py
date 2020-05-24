@@ -10,8 +10,6 @@ from .utils import save, load, plot_prob
 from .config import JsonConfig
 from .models import Glow
 from . import thops
-from AnimationPlotLines import animation_plot
-import matplotlib.pyplot as plt
 
 
 class Trainer(object):
@@ -112,8 +110,6 @@ class Trainer(object):
         seqlen = self.seqlen
         n_lookahead = self.n_lookahead
         
-        print("autoreg_all: " +str(autoreg_all.shape))  
-
         # Initialize the lstm hidden state
         if hasattr(self.graph, "module"):
             self.graph.module.init_lstm_hidden()
@@ -249,7 +245,7 @@ class Trainer(object):
                             z_val, nll_val = self.graph(x=val_batch["x"], cond=val_batch["cond"])
                             
                             # loss
-                            loss_val = loss_val + Glow.loss_generative(nll_val)#.item()
+                            loss_val = loss_val + Glow.loss_generative(nll_val)
                             n_batches = n_batches + 1        
                     
                     loss_val = loss_val/n_batches
@@ -266,7 +262,7 @@ class Trainer(object):
                          max_checkpoints=self.max_checkpoints)
                          
                 # generate samples and save
-                if self.global_step % self.plot_gaps == 0:# and self.global_step > 0:   
+                if self.global_step % self.plot_gaps == 0 and self.global_step > 0:   
                     self.generate_sample(eps_std=1.0)
 
                 # global step

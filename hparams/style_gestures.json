@@ -60,6 +60,6 @@
     "warm_start": ""
   },
   "Infer": {
-    "pre_trained": "results/trinity/log_20200522_1507/checkpoints/trained.pkg"
+    "pre_trained": ""
   }
 }

@@ -1,0 +1,13 @@
+name: moglow
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - matplotlib
+  - numpy
+  - pytorch
+  - scikit-learn
+  - tensorboardx
+  - tqdm
+  - docopt
+

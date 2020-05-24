@@ -6,7 +6,6 @@ from tqdm import tqdm
 from . import thops
 from . import modules
 from . import utils
-from . import log_dist as logistic
 
 def nan_throw(tensor, name="tensor"):
         stop = False

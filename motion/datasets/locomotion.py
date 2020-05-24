@@ -3,7 +3,6 @@ import numpy as np
 from .motion_data import MotionDataset, TestDataset
 from torch.utils.data import Dataset
 from sklearn.preprocessing import StandardScaler
-from AnimationPlotLines import animation_plot
 
 def mirror_data(data):
     aa = data.copy()
@@ -99,7 +98,7 @@ class Locomotion():
         all_test_data = standardize(test_data, scaler)
         synth_data2 = create_synth_test_data(test_data.shape[1], test_data.shape[2], scaler)
         all_test_data = np.concatenate((all_test_data, synth_data2), axis=0)
-        self.ntest = all_test_data.shape[0]
+        self.n_test = all_test_data.shape[0]
         n_tiles = 1+hparams.Train.batch_size//self.n_test
         all_test_data = np.tile(all_test_data.copy(), (n_tiles,1,1))
         
@@ -116,7 +115,7 @@ class Locomotion():
         animation_data = np.concatenate((motion_data,control_data), axis=2)
         anim_clip = inv_standardize(animation_data, self.scaler)
         np.savez(filename + ".npz", clips=anim_clip)
-        #for i in range(0,self.ntest):
+        #for i in range(0,self.n_test):
             #filename_ = f'{filename}_{str(i)}.mp4'
             #print('writing:' + filename_)
             #parents = np.array([0,1,2,3,4,1,6,7,8,1,10,11,12,12,14,15,16,12,18,19,20]) - 1
