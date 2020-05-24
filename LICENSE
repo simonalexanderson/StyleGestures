@@ -1,0 +1,27 @@
+License and Copyright Information
+---------------------------------
+This code implementation is only for academic research purposes, and not freely available for commercial use or redistribution. The intellectual property and code implementation belongs to the authors. We would ask that you please include the following citations in any published work which uses this code.
+
+@article{henter2019moglow,
+  title={Moglow: Probabilistic and controllable motion synthesis using normalising flows},
+  author={Henter, Gustav Eje and Alexanderson, Simon and Beskow, Jonas},
+  journal={arXiv preprint arXiv:1905.06598},
+  year={2019}
+}    
+
+@inproceedings{alexanderson2020style,
+  title={Style-Controllable Speech-Driven Gesture Synthesis Using Normalising Flows},
+  author={Alexanderson, Simon and Henter, Gustav Eje and Kucherenko, Taras and Beskow, Jonas},
+  booktitle={EUROGRAPHICS 2020},
+  year={2020}
+}
+
+
+
+Third party code
+----------------------------------------
+The code is based on the following pytorch implementation of Glow. Unmodified code is subject to the MIT licens.
+https://github.com/chaiyujin/glow-pytorch
+
+
+Quaternions.py and AnimationPlotLines.py used for visualisation comes from Daniel Holden's code at http://theorangeduck.com/
