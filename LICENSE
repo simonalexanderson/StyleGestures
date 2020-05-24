@@ -22,6 +22,3 @@ Third party code
 ----------------------------------------
 The code is based on the following pytorch implementation of Glow. Unmodified code is subject to the MIT licens.
 https://github.com/chaiyujin/glow-pytorch
-
-
-Quaternions.py and AnimationPlotLines.py used for visualisation comes from Daniel Holden's code at http://theorangeduck.com/
