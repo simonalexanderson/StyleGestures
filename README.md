@@ -1,10 +1,8 @@
 # StyleGestures
-===============
 This repository contains code for reproducing the papers "Moglow: Probabilistic and controllable motion synthesis using normalising flows" and "Style-Controllable Speech-Driven Gesture Synthesis Using Normalising Flows"
 
-#To run the code
-===============
-´python train_moglow.py <hparams> <dataset>´
+# To run the code
+`python train_moglow.py <hparams> <dataset>`
 
 For locomotion synthesis:
 ```
@@ -14,8 +12,7 @@ For gesture synthesis:
 ```
 python train_moglow.py 'hparams/style_gestures.json' trinity
 ```
-#To adapt to new data
-====================
+# To adapt to new data
 Modify the hyperparameters defined in `hparams/style_gestures.json` or `hparams/locomotion.json`. Note that the following entries must match the input and control dimensions:
 
 ```
