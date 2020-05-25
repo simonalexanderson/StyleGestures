@@ -35,12 +35,14 @@ if __name__ == "__main__":
 		
     print("log_dir:" + str(log_dir))
     data = dataset(hparams)
+    x_channels, cond_channels = data.get_train_dataset().n_channels()
 
     # build graph
+
     if hparams.Infer.pre_trained == "":
-        built = build(hparams, True)
+        built = build(x_channels, cond_channels, hparams, True)
     else:
-        built = build(hparams, False)
+        built = build(x_channels, cond_channels, hparams, False)
     
         
     # build trainer

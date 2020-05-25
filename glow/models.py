@@ -141,7 +141,7 @@ class FlowStep(nn.Module):
 
 
 class FlowNet(nn.Module):
-    def __init__(self, n_features, hidden_channels, cond_channels, K,
+    def __init__(self, x_channels, hidden_channels, cond_channels, K,
                  actnorm_scale=1.0,
                  flow_permutation="invconv",
                  flow_coupling="additive",
@@ -153,11 +153,10 @@ class FlowNet(nn.Module):
         self.layers = nn.ModuleList()
         self.output_shapes = []
         self.K = K
-        C = n_features
         N = cond_channels
         for _ in range(K):
             self.layers.append(
-                FlowStep(in_channels=C,
+                FlowStep(in_channels=x_channels,
                          hidden_channels=hidden_channels,
                          cond_channels=N,
                          actnorm_scale=actnorm_scale,
@@ -167,7 +166,7 @@ class FlowNet(nn.Module):
                          num_layers=2,
                          LU_decomposed=LU_decomposed))
             self.output_shapes.append(
-                [-1, C, 1])
+                [-1, x_channels, 1])
 
     def init_lstm_hidden(self):
         for layer in self.layers:
@@ -187,11 +186,11 @@ class FlowNet(nn.Module):
 
 class Glow(nn.Module):
 
-    def __init__(self, hparams):
+    def __init__(self, x_channels, cond_channels, hparams):
         super().__init__()
-        self.flow = FlowNet(n_features=hparams.Glow.n_features,
+        self.flow = FlowNet(x_channels=x_channels,
                             hidden_channels=hparams.Glow.hidden_channels,
-                            cond_channels=hparams.Glow.cond_channels,
+                            cond_channels=cond_channels,
                             K=hparams.Glow.K,
                             actnorm_scale=hparams.Glow.actnorm_scale,
                             flow_permutation=hparams.Glow.flow_permutation,
@@ -204,7 +203,7 @@ class Glow(nn.Module):
         # register prior hidden
         num_device = len(utils.get_proper_device(hparams.Device.glow, False))
         assert hparams.Train.batch_size % num_device == 0
-        self.z_shape = [hparams.Train.batch_size // num_device, hparams.Glow.n_features, 1]
+        self.z_shape = [hparams.Train.batch_size // num_device, x_channels, 1]
 
     def init_lstm_hidden(self):
         self.flow.init_lstm_hidden()

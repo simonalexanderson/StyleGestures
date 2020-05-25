@@ -48,6 +48,9 @@ class MotionDataset(Dataset):
         print("self.x:" + str(self.x.shape))        
         print("self.cond:" + str(self.cond.shape))
         
+    def n_channels(self):
+        return self.x.shape[1], self.cond.shape[1]
+		
     def concat_sequence(self, seqlen, data):
         """ 
         Concatenates a sequence of features to one.

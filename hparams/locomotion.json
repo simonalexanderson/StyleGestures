@@ -4,9 +4,7 @@
         "log_root": "results/locomotion"
     },
     "Glow" : {
-        "n_features": 63,
         "hidden_channels": 512,
-        "cond_channels": 663,
         "K": 16,
         "actnorm_scale": 1.0,
         "flow_permutation": "invconv",

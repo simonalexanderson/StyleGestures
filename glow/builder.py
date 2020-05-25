@@ -17,7 +17,7 @@ __build_optim_dict = {
 }
 
 
-def build(hparams, is_training):
+def build(x_channels, cond_channels, hparams, is_training):
     if isinstance(hparams, str):
         hparams = JsonConfig(hparams)
     # get graph and criterions from build function
@@ -26,7 +26,7 @@ def build(hparams, is_training):
     get_loss = None
     # 1. build graph and criterion_dict, (on cpu)
     # build and append `device attr` to graph
-    graph = Glow(hparams)
+    graph = Glow(x_channels, cond_channels, hparams)
     graph.device = hparams.Device.glow
     if graph is not None:
         # get device
