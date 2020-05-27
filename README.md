@@ -1,14 +1,16 @@
 # StyleGestures
-This repository contains code for reproducing the papers "Moglow: Probabilistic and controllable motion synthesis using normalising flows" (https://arxiv.org/abs/1905.06598) and "Style-Controllable Speech-Driven Gesture Synthesis Using Normalising Flows" (https://diglib.eg.org/handle/10.1111/cgf13946)
-[Simon Alexanderson](https://www.kth.se/profile/simonal?l=en), [Gustav Eje Henter](https://people.kth.se/~ghe/), [Taras Kucherenko](https://svito-zar.github.io/), [Jonas Beskow](https://www.kth.se/profile/beskow?l=en)
+This repository contains code for reproducing the papers ["Moglow: Probabilistic and controllable motion synthesis using normalising flows"](https://arxiv.org/abs/1905.06598) and ["Style-Controllable Speech-Driven Gesture Synthesis Using Normalising Flows"](https://diglib.eg.org/handle/10.1111/cgf13946)
 
-[Demo video](https://youtu.be/egf3tjbWBQE)
+Please watch the following videos for an introduction:
+Moglow: (https://youtu.be/ozVldUcFjZg)
+Style Gestures: (https://youtu.be/egf3tjbWBQE)
+
 
 # Prerequisites
 The 'environment.yml' contains the required dependencies.
 
 # Training
-Edit the 'hparams/xxx.json' file to modify network and traning parameters. Start train by running the following command:
+Edit the 'hparams/xxx.json' file to modify network and traning parameters. Start training by running the following command:
 
 ```
 python train_moglow.py <hparams> <dataset>
