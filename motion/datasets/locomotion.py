@@ -3,6 +3,7 @@ import numpy as np
 from .motion_data import MotionDataset, TestDataset
 from torch.utils.data import Dataset
 from sklearn.preprocessing import StandardScaler
+from visualization.plot_animation import plot_animation
 
 def mirror_data(data):
     aa = data.copy()
@@ -115,11 +116,12 @@ class Locomotion():
         animation_data = np.concatenate((motion_data,control_data), axis=2)
         anim_clip = inv_standardize(animation_data, self.scaler)
         np.savez(filename + ".npz", clips=anim_clip)
-        #for i in range(0,self.n_test):
-            #filename_ = f'{filename}_{str(i)}.mp4'
-            #print('writing:' + filename_)
-            #parents = np.array([0,1,2,3,4,1,6,7,8,1,10,11,12,12,14,15,16,12,18,19,20]) - 1
-            #animation_plot(anim_clip[i,self.seqlen:,:], parents, filename_, ignore_root=False, fps=self.frame_rate, axis_scale=60)
+        n_clips = min(self.n_test, anim_clip.shape[0])
+        for i in range(0,n_clips):
+            filename_ = f'{filename}_{str(i)}.mp4'
+            print('writing:' + filename_)
+            parents = np.array([0,1,2,3,4,1,6,7,8,1,10,11,12,12,14,15,16,12,18,19,20]) - 1
+            plot_animation(anim_clip[i,self.seqlen:,:], parents, filename_, fps=self.frame_rate, axis_scale=60)
 
     def get_train_dataset(self):
         return self.train_dataset
