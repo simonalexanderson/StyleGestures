@@ -32,16 +32,22 @@ Output samples are generated at specified intervals during training. Inference f
 
 ```
 @article{henter2019moglow,
-  title={Moglow: Probabilistic and controllable motion synthesis using normalising flows},
+  title={{M}o{G}low: {P}robabilistic and controllable motion synthesis using normalising flows},
   author={Henter, Gustav Eje and Alexanderson, Simon and Beskow, Jonas},
   journal={arXiv preprint arXiv:1905.06598},
   year={2019}
-}    
-
-@inproceedings{alexanderson2020style,
-  title={Style-Controllable Speech-Driven Gesture Synthesis Using Normalising Flows},
-  author={Alexanderson, Simon and Henter, Gustav Eje and Kucherenko, Taras and Beskow, Jonas},
-  booktitle={EUROGRAPHICS 2020},
-  year={2020}
 }
+
+@article{alexanderson2020style,
+  title={Style-controllable speech-driven gesture synthesis using normalising flows},
+  author={Alexanderson, Simon and Henter, Gustav Eje and Kucherenko, Taras and Beskow, Jonas},
+  journal={Computer Graphics Forum},
+  volume={39},
+  number={2},
+  pages={487--496},
+  year={2020},
+  url={https://diglib.eg.org/handle/10.1111/cgf13946},
+  publisher={John Wiley & Sons}
+}
+
 ```
