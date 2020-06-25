@@ -1,6 +1,6 @@
 {
     "Dir": {
-        "data_root": "../../data/locomotion",
+        "data_root": "data/locomotion",
         "log_root": "results/locomotion"
     },
     "Glow" : {
