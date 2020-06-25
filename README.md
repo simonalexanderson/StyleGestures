@@ -9,6 +9,11 @@ Style Gestures: (https://youtu.be/egf3tjbWBQE)
 # Prerequisites
 The 'environment.yml' contains the required dependencies.
 
+# Data
+Our preprocessed version of the human locomotion data is available at https://kth.app.box.com/folder/116440954250. Download it to the 'data/locomotion' folder. The data is pooled from the Edinburgh Locomotion, CMU and HDM05 datasets. Please see the included README file for licenses and citations.
+
+The gesture data is available at http://trinityspeechgesture.scss.tcd.ie/. Trinity College Dublin require interested parties to sign a license agreement and receive approval before gaining access the material, so we cannot host it here. We are looking to provide preprocessing guidelines and code in the near future.
+
 # Training
 Edit the 'hparams/xxx.json' file to modify network and traning parameters. Start training by running the following command:
 
