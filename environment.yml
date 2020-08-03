@@ -1,4 +1,4 @@
-name: moglow-pre2
+name: moglow
 channels:
   - conda-forge
   - defaults
