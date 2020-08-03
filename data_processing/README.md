@@ -1,10 +1,16 @@
 PREPROCESSING GUIDLINES FOR GESTURE GENERATION
 ==============================================
-The 'prepare_datasets.py' script extracts features and prepares training, validation and test datasets for StyleGestures.
+The ´prepare_datasets.py´ script extracts features and prepares training, validation and test datasets for StyleGestures.
 Our required input format is synchronized motion (bvh) and audio (48k wav) files, which should be placed in the ~StyleGestures/data/trinity/source folder.
 
-run 'python prepare_datasets.py' for our base system
-run 'python prepare_datasets.py [MG-V|MG-H|MG-R|MG-S]' for style controlled systems
+To preprocess data for our base system:
+```
+python prepare_datasets.py 
+```
+For style controlled systems:
+```
+python prepare_datasets.py [MG-V|MG-H|MG-R|MG-S]
+```
 
 NOTE: Running the script repeatedly will overwrite previous datasets, so backup these if you want to switch between systems or train multiple systems in parallel.
 
