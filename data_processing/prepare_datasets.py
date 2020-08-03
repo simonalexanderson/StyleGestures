@@ -257,14 +257,14 @@ if __name__ == "__main__":
         test_ctrl[2::3,:,-1].fill(np.quantile(train_ctrl[:,:,-1],0.85))
                     
     #import pdb;pdb.set_trace()
-    #np.savez(os.path.join(processed_dir,f'train_output_{fps}fps.npz'), clips = train_motion)
-    #np.savez(os.path.join(processed_dir,f'train_input_{fps}fps.npz'), clips = train_ctrl)
-    #np.savez(os.path.join(processed_dir,f'val_output_{fps}fps.npz'), clips = val_motion)
-    #np.savez(os.path.join(processed_dir,f'val_input_{fps}fps.npz'), clips = val_ctrl)
-    #np.savez(os.path.join(processed_dir,f'dev_output_{fps}fps.npz'), clips = dev_motion)
-    #np.savez(os.path.join(processed_dir,f'dev_input_{fps}fps.npz'), clips = dev_ctrl)
-    #np.savez(os.path.join(processed_dir,f'test_output_{fps}fps.npz'), clips = test_motion)
-    #np.savez(os.path.join(processed_dir,f'test_input_{fps}fps.npz'), clips = test_ctrl)
+    np.savez(os.path.join(processed_dir,f'train_output_{fps}fps.npz'), clips = train_motion)
+    np.savez(os.path.join(processed_dir,f'train_input_{fps}fps.npz'), clips = train_ctrl)
+    np.savez(os.path.join(processed_dir,f'val_output_{fps}fps.npz'), clips = val_motion)
+    np.savez(os.path.join(processed_dir,f'val_input_{fps}fps.npz'), clips = val_ctrl)
+    np.savez(os.path.join(processed_dir,f'dev_output_{fps}fps.npz'), clips = dev_motion)
+    np.savez(os.path.join(processed_dir,f'dev_input_{fps}fps.npz'), clips = dev_ctrl)
+    np.savez(os.path.join(processed_dir,f'test_output_{fps}fps.npz'), clips = test_motion)
+    np.savez(os.path.join(processed_dir,f'test_input_{fps}fps.npz'), clips = test_ctrl)
 
     # finally prepare data for visualisation, i.e. the dev and test data in wav and bvh format    
     dev_vispath = os.path.join(processed_dir, 'visualization_dev')
