@@ -1,4 +1,4 @@
-name: moglow
+name: moglow-pre2
 channels:
   - conda-forge
   - defaults
@@ -6,8 +6,12 @@ dependencies:
   - matplotlib
   - numpy
   - pytorch
+  - cudatoolkit=10.2
   - scikit-learn
   - tensorboardx
   - tqdm
   - docopt
+  - pandas
+  - joblib
+  - librosa
 
