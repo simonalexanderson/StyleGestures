@@ -1,40 +1,40 @@
 # StyleGestures
-This repository contains code for reproducing the papers ["Moglow: Probabilistic and controllable motion synthesis using normalising flows"](https://arxiv.org/abs/1905.06598) and ["Style-Controllable Speech-Driven Gesture Synthesis Using Normalising Flows"](https://diglib.eg.org/handle/10.1111/cgf13946)
+This repository contains code for reproducing the papers "[MoGlow: Probabilistic and controllable motion synthesis using normalising flows](https://arxiv.org/abs/1905.06598)" and "[Style-controllable speech-driven gesture synthesis using normalising flows](https://diglib.eg.org/handle/10.1111/cgf13946)". Parts of the code are based on the Glow implementation at https://github.com/chaiyujin/glow-pytorch/.
 
-Please watch the following videos for an introduction:
-Moglow: (https://youtu.be/ozVldUcFjZg)
-Style Gestures: (https://youtu.be/egf3tjbWBQE)
-
+Please watch the following videos for an introduction to the papers:
+* MoGlow: (https://youtu.be/ozVldUcFjZg)
+* Style Gestures: (https://youtu.be/egf3tjbWBQE)
 
 # Prerequisites
-The 'environment.yml' contains the required dependencies.
+The conda environment `moglow` defined in 'environment.yml' contains the required dependencies.
 
 # Data
-Our preprocessed version of the human locomotion data is available at https://kth.app.box.com/folder/116440954250. Download it to the 'data/locomotion' folder. The data is pooled from the Edinburgh Locomotion, CMU and HDM05 datasets. Please see the included README file for licenses and citations.
+Our preprocessed version of the human locomotion data is available at https://kth.app.box.com/folder/116440954250. Download it to the 'data/locomotion' folder. The data is pooled from the Edinburgh Locomotion, CMU Motion Capture, and HDM05 datasets. Please see the included README file for licenses and citations.
 
-The gesture data is available at http://trinityspeechgesture.scss.tcd.ie/. Trinity College Dublin require interested parties to sign a license agreement and receive approval before gaining access the material, so we cannot host it here. We are looking to provide preprocessing guidelines and code in the near future.
+The gesture data is available at http://trinityspeechgesture.scss.tcd.ie/. Trinity College Dublin requires interested parties to sign a license agreement and receive approval before gaining access the material, so we cannot host it here. Preprocessing guidelines and code can be found in the 'data_processing' folder. There are still a few manual steps to get the data into the required bvh format. Please read the included README file for instructions.
 
 # Training
-Edit the 'hparams/xxx.json' file to modify network and traning parameters. Start training by running the following command:
-
+Edit the 'hparams/xxx.json' file to modify network and training parameters. Start training by running the following command:
 ```
 python train_moglow.py <hparams> <dataset>
 ```
 
-Example 1. For locomotion synthesis:
+Example 1. For training a locomotion model:
 ```
 python train_moglow.py 'hparams/locomotion.json' locomotion
 ```
-Example 2. For gesture synthesis:
+Example 2. For training a gesture model:
 ```
 python train_moglow.py 'hparams/style_gestures.json' trinity
 ```
 
-# Inference
-Output samples are generated at specified intervals during training. Inference from a pre-trained model is done by specifying the path in the 'hparams/xxx.json' file and then running `python train_moglow.py <hparams> <dataset>`. 
+Note: Although the code allows multi-GPU training, this is not supported as it leads to incorrect results.
+
+# Synthesis
+Output samples are generated at specified intervals during training. Sampling from a pre-trained model is done by specifying the path in the 'hparams/xxx.json' file and then running `python train_moglow.py <hparams> <dataset>`.
 
 # References
-
+If you use our code or build on our method, please credit our publications:
 ```
 @article{henter2019moglow,
   title={{M}o{G}low: {P}robabilistic and controllable motion synthesis using normalising flows},
@@ -52,7 +52,7 @@ Output samples are generated at specified intervals during training. Inference f
   pages={487--496},
   year={2020},
   url={https://diglib.eg.org/handle/10.1111/cgf13946},
-  publisher={John Wiley & Sons}
+  doi={10.1111/cgf.13946},
+  publisher={John Wiley \& Sons}
 }
-
 ```
