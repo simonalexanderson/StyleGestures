@@ -1,6 +1,6 @@
 {
   "Dir": {
-    "data_root": "../data/",
+    "data_root": "data/trinity/processed",
     "log_root": "results/trinity"
   },
   "Glow": {
@@ -17,8 +17,7 @@
     "framerate": 20,
     "seqlen": 5,
     "n_lookahead": 20,
-    "dropout": 0.4,
-    "mirror": true
+    "dropout": 0.4
   },
   "Optim": {
     "name": "adam",
@@ -45,7 +44,7 @@
     "data": "cuda:4"
   },
   "Train": {
-    "batch_size": 100,
+    "batch_size": 60,
     "num_batches": 160000,
     "max_grad_clip": 5,
     "max_grad_norm": 100,
