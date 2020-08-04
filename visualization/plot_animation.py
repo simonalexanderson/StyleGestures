@@ -57,11 +57,8 @@ def plot_animation(clip, parents, filename=None, fps=30, axis_scale=50, elev=45,
         
         for j in range(len(parents)):
             if parents[j] != -1:
-                lines[1][j].set_data(
-                    [ joints[i,j,0], joints[i,parents[j],0]],
-                    [-joints[i,j,2],       -joints[i,parents[j],2]])
-                lines[1][j].set_3d_properties(
-                    [ joints[i,j,1],        joints[i,parents[j],1]])
+                lines[1][j].set_data(np.array([[joints[i,j,0], joints[i,parents[j],0]],[-joints[i,j,2],-joints[i,parents[j],2]]]))
+                lines[1][j].set_3d_properties(np.array([ joints[i,j,1],joints[i,parents[j],1]]))
 
         changed += lines
             
