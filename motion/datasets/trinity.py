@@ -9,6 +9,7 @@ from sklearn.preprocessing import StandardScaler
 module_path = os.path.abspath(os.path.join('data_processing'))
 if module_path not in sys.path:
     sys.path.append(module_path)
+from pymo.writers import *
 
 def fit_and_standardize(data):
 
@@ -76,7 +77,7 @@ class Trinity():
     def save_animation(self, control_data, motion_data, filename):
         anim_clips = inv_standardize(motion_data[:(self.n_test),:,:], self.scaler)
         np.savez(filename + ".npz", clips=anim_clips)  
-        write_bvh(anim_clips, filename, )
+        self.write_bvh(anim_clips, filename)
         
     def write_bvh(self, anim_clips, filename):
         print('inverse_transform...')
