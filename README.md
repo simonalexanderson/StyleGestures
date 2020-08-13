@@ -9,7 +9,7 @@ Please watch the following videos for an introduction to the papers:
 The conda environment `moglow` defined in 'environment.yml' contains the required dependencies.
 
 # Data
-Our preprocessed version of the human locomotion data is available at https://kth.app.box.com/folder/116440954250. Download it to the 'data/locomotion' folder. The data is pooled from the Edinburgh Locomotion, CMU Motion Capture, and HDM05 datasets. Please see the included README file for licenses and citations.
+Our preprocessed version of the human locomotion data is available at https://kth.box.com/s/quh3rwwl2hedwo32cdg1kq7pff04fjdf. Download it to the 'data/locomotion' folder. The data is pooled from the Edinburgh Locomotion, CMU Motion Capture, and HDM05 datasets. Please see the included README file for licenses and citations.
 
 The gesture data is available at http://trinityspeechgesture.scss.tcd.ie/. Trinity College Dublin requires interested parties to sign a license agreement and receive approval before gaining access the material, so we cannot host it here. Preprocessing guidelines and code can be found in the 'data_processing' folder. There are still a few manual steps to get the data into the required bvh format. Please read the included README file for instructions.
 
