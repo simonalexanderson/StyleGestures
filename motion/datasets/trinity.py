@@ -34,48 +34,55 @@ def inv_standardize(data, scaler):
 
 class Trinity():
 
-    def __init__(self, hparams):
+    def __init__(self, hparams, is_training):
         data_root = hparams.Dir.data_root
 
-        #load data
-        train_input = np.load(os.path.join(data_root, 'train_input_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
-        train_output = np.load(os.path.join(data_root, 'train_output_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
-        val_input = np.load(os.path.join(data_root, 'val_input_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
-        val_output = np.load(os.path.join(data_root, 'val_output_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
-
-        #use this to generate visualizations for network tuning. It contains the same data as val_input, but sliced into longer 20-sec exerpts
-        test_input = np.load(os.path.join(data_root, 'dev_input_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
+        #load scalers.
+        self.input_scaler = jl.load(os.path.join(data_root, 'input_scaler.sav'))
+        self.output_scaler = jl.load(os.path.join(data_root, 'output_scaler.sav'))
         
         #load pipeline for convertion from motion features to BVH.
         self.data_pipe = jl.load(os.path.join(data_root, 'data_pipe_'+str(hparams.Data.framerate)+'fps.sav'))
+
+        if is_training:
         
-        #use this to generate test data for evaluation
-        #test_input = np.load(os.path.join(data_root, 'test_input_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
+            #load the data. This should allready be Standartized
+            train_input = np.load(os.path.join(data_root, 'train_input_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
+            train_output = np.load(os.path.join(data_root, 'train_output_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
+            val_input = np.load(os.path.join(data_root, 'val_input_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
+            val_output = np.load(os.path.join(data_root, 'val_output_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
+
+            # Create pytorch data sets
+            self.train_dataset = MotionDataset(train_input, train_output, hparams.Data.seqlen, hparams.Data.n_lookahead, hparams.Data.dropout)    
+            self.validation_dataset = MotionDataset(val_input, val_output, hparams.Data.seqlen, hparams.Data.n_lookahead, hparams.Data.dropout)    
+            
+            #test data for network tuning. It contains the same data as val_input, but sliced into longer 20-sec exerpts
+            test_input = np.load(os.path.join(data_root, 'dev_input_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)                                   
+            
+        else:
+            self.train_dataset = None
+            self.validation_dataset = None
+            #use this to generate test data for evaluation. NOTE: We standardise this here and not in preparation
+            test_input = np.load(os.path.join(data_root, 'test_input_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
+            test_input = standardize(test_input, self.input_scaler)
                        
         # make sure the test data is at least one batch size
         self.n_test = test_input.shape[0]
         n_tiles = 1+hparams.Train.batch_size//self.n_test
         test_input = np.tile(test_input.copy(), (n_tiles,1,1))
 
-        # Standartize
-        train_input, input_scaler = fit_and_standardize(train_input)
-        train_output, output_scaler = fit_and_standardize(train_output)
-        val_input = standardize(val_input, input_scaler)
-        val_output = standardize(val_output, output_scaler)
-        test_input = standardize(test_input, input_scaler)
-        test_output = np.zeros((test_input.shape[0], test_input.shape[1], train_output.shape[2])).astype(np.float32)
+        # initialise test output with zeros (mean pose)
+        self.n_x_channels = self.output_scaler.mean_.shape[0]
+        self.n_cond_channels = self.n_x_channels*hparams.Data.seqlen + test_input.shape[2]*(hparams.Data.seqlen + 1 + hparams.Data.n_lookahead)
+        test_output = np.zeros((test_input.shape[0], test_input.shape[1], self.n_x_channels)).astype(np.float32)
                         
-        # Create pytorch data sets
-        self.train_dataset = MotionDataset(train_input, train_output, hparams.Data.seqlen, hparams.Data.n_lookahead, hparams.Data.dropout)    
-        self.validation_dataset = MotionDataset(val_input, val_output, hparams.Data.seqlen, hparams.Data.n_lookahead, hparams.Data.dropout)    
         self.test_dataset = TestDataset(test_input, test_output)
         
-        # Store scaler and fps
-        self.scaler = output_scaler
+        # Store fps
         self.fps = hparams.Data.framerate
 
     def save_animation(self, control_data, motion_data, filename):
-        anim_clips = inv_standardize(motion_data[:(self.n_test),:,:], self.scaler)
+        anim_clips = inv_standardize(motion_data[:,:,:], self.output_scaler)
         np.savez(filename + ".npz", clips=anim_clips)  
         self.write_bvh(anim_clips, filename)
         
@@ -88,6 +95,9 @@ class Trinity():
             print('writing:' + filename_)
             with open(filename_,'w') as f:
                 writer.write(inv_data[i], f, framerate=self.fps)
+        
+    def n_channels(self):
+        return self.n_x_channels, self.n_cond_channels
         
     def get_train_dataset(self):
         return self.train_dataset
