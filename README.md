@@ -23,15 +23,15 @@ python train_moglow.py <hparams> <dataset>
 
 Example 1. For training a locomotion model (joint positions):
 ```
-python train_moglow.py 'hparams/locomotion.json' locomotion
+python train_moglow.py 'hparams/preferred/locomotion.json' locomotion
 ```
 Example 2. For training a locomotion model (joint angles):
 ```
-python train_moglow.py 'hparams/locomotion_rot.json' locomotion_rot
+python train_moglow.py 'hparams/preferred/locomotion_rot.json' locomotion_rot
 ```
 Example 3. For training a gesture model:
 ```
-python train_moglow.py 'hparams/style_gestures.json' trinity
+python train_moglow.py 'hparams/preferred/style_gestures.json' trinity
 ```
 
 IMPORTANT NOTE! Although the code allows multi-GPU training, this is not supported as it leads to incorrect results.
