@@ -10,6 +10,7 @@ from .utils import save, load, plot_prob
 from .config import JsonConfig
 from .models import Glow
 from . import thops
+from .generator import Generator
 
 
 class Trainer(object):
@@ -56,18 +57,21 @@ class Trainer(object):
         self.n_epoches = self.n_epoches // len(self.data_loader)
         self.global_step = 0
         
-        self.seqlen = hparams.Data.seqlen
-        self.n_lookahead = hparams.Data.n_lookahead
+        self.generator = Generator(data, data_device, log_dir, hparams)
+
         
-        # test batch
-        self.test_data_loader = DataLoader(data.get_test_dataset(),
-                                      batch_size=self.batch_size,
-                                       num_workers=1,
-                                      shuffle=False,
-                                      drop_last=True)
-        self.test_batch = next(iter(self.test_data_loader))
-        for k in self.test_batch:
-            self.test_batch[k] = self.test_batch[k].to(self.data_device)
+        # self.seqlen = hparams.Data.seqlen
+        # self.n_lookahead = hparams.Data.n_lookahead
+        
+        ##test batch
+        # self.test_data_loader = DataLoader(data.get_test_dataset(),
+                                      # batch_size=self.batch_size,
+                                       # num_workers=1,
+                                      # shuffle=False,
+                                      # drop_last=True)
+        # self.test_batch = next(iter(self.test_data_loader))
+        # for k in self.test_batch:
+            # self.test_batch[k] = self.test_batch[k].to(self.data_device)
 
         # validation batch
         self.val_data_loader = DataLoader(data.get_validation_dataset(),
@@ -88,59 +92,7 @@ class Trainer(object):
         self.scalar_log_gaps = hparams.Train.scalar_log_gap
         self.validation_log_gaps = hparams.Train.validation_log_gap
         self.plot_gaps = hparams.Train.plot_gap
-        
-    def prepare_cond(self, jt_data, ctrl_data):
-        nn,seqlen,n_feats = jt_data.shape
-        
-        jt_data = jt_data.reshape((nn, seqlen*n_feats))
-        nn,seqlen,n_feats = ctrl_data.shape
-        ctrl_data = ctrl_data.reshape((nn, seqlen*n_feats))
-        cond = torch.from_numpy(np.expand_dims(np.concatenate((jt_data,ctrl_data),axis=1), axis=-1))
-        return cond.to(self.data_device)
-    
-    def generate_sample(self, eps_std=1.0, counter=0):
-        print("generate_sample")
-
-        batch = self.test_batch
-
-        autoreg_all = batch["autoreg"].cpu().numpy()
-        control_all = batch["control"].cpu().numpy()
-
-        # Initialize the pose sequence with ground truth test data
-        seqlen = self.seqlen
-        n_lookahead = self.n_lookahead
-        
-        # Initialize the lstm hidden state
-        if hasattr(self.graph, "module"):
-            self.graph.module.init_lstm_hidden()
-        else:
-            self.graph.init_lstm_hidden()
             
-        nn,n_timesteps,n_feats = autoreg_all.shape
-        sampled_all = np.zeros((nn, n_timesteps-n_lookahead, n_feats))
-        autoreg = np.zeros((nn, seqlen, n_feats), dtype=np.float32) #initialize from a mean pose
-        sampled_all[:,:seqlen,:] = autoreg
-        
-        # Loop through control sequence and generate new data
-        for i in range(0,control_all.shape[1]-seqlen-n_lookahead):
-            control = control_all[:,i:(i+seqlen+1+n_lookahead),:]
-            
-            # prepare conditioning for moglow (control + previous poses)
-            cond = self.prepare_cond(autoreg.copy(), control.copy())
-
-            # sample from Moglow
-            sampled = self.graph(z=None, cond=cond, eps_std=eps_std, reverse=True)
-            sampled = sampled.cpu().numpy()[:,:,0]
-
-            # store the sampled frame
-            sampled_all[:,(i+seqlen),:] = sampled
-            
-            # update saved pose sequence
-            autoreg = np.concatenate((autoreg[:,1:,:].copy(), sampled[:,None,:]), axis=1)
-            
-        # store the generated animations
-        self.data.save_animation(control_all[:,:(n_timesteps-n_lookahead),:], sampled_all, os.path.join(self.log_dir, f'sampled_{counter}_temp{str(int(eps_std*100))}_{str(self.global_step//1000)}k'))              
-    
     def count_parameters(self, model):
          return sum(p.numel() for p in model.parameters() if p.requires_grad)    
 
@@ -263,7 +215,7 @@ class Trainer(object):
                          
                 # generate samples and save
                 if self.global_step % self.plot_gaps == 0 and self.global_step > 0:   
-                    self.generate_sample(eps_std=1.0)
+                    self.generator.generate_sample(self.graph, eps_std=1.0, step=self.global_step)
 
                 # global step
                 self.global_step += 1
