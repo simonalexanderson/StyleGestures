@@ -1,0 +1,64 @@
+{
+  "Dir": {
+    "data_root": "data/locomotion_rot/processed",
+    "log_root": "results/locomotion_rot"
+  },
+  "Glow": {
+    "hidden_channels": 512,
+    "K": 16,
+    "actnorm_scale": 1.0,
+    "flow_permutation": "invconv",
+    "flow_coupling": "affine",
+    "network_model": "LSTM",
+    "num_layers": 2,
+    "LU_decomposed": true,
+    "distribution": "studentT",
+    "distribution_param": 50
+  },
+  "Data": {
+    "framerate": 20,
+    "seqlen": 10,
+    "n_lookahead": 0,
+    "dropout": 0.6
+  },
+  "Optim": {
+    "name": "adam",
+    "args": {
+      "lr": 0.001,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08
+    },
+    "Schedule": {
+      "name": "noam_learning_rate_decay",
+      "args": {
+        "warmup_steps": 1000,
+        "minimum": 0.0001
+      }
+    }
+  },
+  "Device": {
+    "glow": [
+      "cuda:6"
+    ],
+    "data": "cuda:6"
+  },
+  "Train": {
+    "batch_size": 80,
+    "num_batches": 80000,
+    "max_grad_clip": -5,
+    "max_grad_norm": -100,
+    "max_checkpoints": 3,
+    "checkpoints_gap": 40000,
+    "num_plot_samples": 1,
+    "scalar_log_gap": 50,
+    "validation_log_gap": 500,
+    "plot_gap": 40000,
+    "warm_start": ""
+  },
+  "Infer": {
+    "pre_trained": ""
+  }
+}
