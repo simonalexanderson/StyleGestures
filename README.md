@@ -2,7 +2,7 @@
 This repository contains code for reproducing the papers "[MoGlow: Probabilistic and controllable motion synthesis using normalising flows](https://arxiv.org/abs/1905.06598)" and "[Style-controllable speech-driven gesture synthesis using normalising flows](https://diglib.eg.org/handle/10.1111/cgf13946)". Parts of the code are based on the Glow implementation at https://github.com/chaiyujin/glow-pytorch/.
 
 Please watch the following videos for an introduction to the papers:
-* MoGlow: (https://youtu.be/ozVldUcFjZg)
+* MoGlow: (https://www.youtube.com/pe-YTvavbtA)
 * Style Gestures: (https://youtu.be/egf3tjbWBQE)
 
 # Prerequisites
