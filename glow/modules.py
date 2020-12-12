@@ -376,8 +376,7 @@ class GRU(nn.Module):
 class GaussianDiag:
     Log2PI = float(np.log(2 * np.pi))
 
-    @staticmethod
-    def likelihood(x):
+    def likelihood(self,x):
         """
         lnL = -1/2 * { ln|Var| + ((X - Mu)^T)(Var^-1)(X - Mu) + kln(2*PI) }
               k = 1 (Independent)
@@ -385,22 +384,68 @@ class GaussianDiag:
         """
         return -0.5 * (((x) ** 2) + GaussianDiag.Log2PI)
 
-    @staticmethod
-    def logp(x):
-        likelihood = GaussianDiag.likelihood(x)
+    def logp(self,x):
+        likelihood = self.likelihood(x)
         return thops.sum(likelihood, dim=[1, 2])
 
-    @staticmethod
-    def sample(z_shape, eps_std=None, device=None):
+    def sample(self,z_shape, eps_std=None, device=None):
         eps_std = eps_std or 1
         eps = torch.normal(mean=torch.zeros(z_shape),
                            std=torch.ones(z_shape) * eps_std)
         eps = eps.to(device)
         return eps
 
+class StudentT:
+
+    def __init__(self, df, d):
+        self.df=df
+        self.d=d
+        self.norm_const = scipy.special.loggamma(0.5*(df+d))-scipy.special.loggamma(0.5*df)-0.5*d*np.log(np.pi*df)
+
+    def logp(self,x):
+        '''
+        Multivariate t-student density:
+        output:
+            the sum density of the given element
+        '''
+        #df=100
+        #d=x.shape[1]
+        #norm_const = scipy.special.loggamma(0.5*(df+d))-scipy.special.loggamma(0.5*df)-0.5*d*np.log(np.pi*df)
+        #import pdb; pdb.set_trace()        
+        x_norms = thops.sum(((x) ** 2), dim=[1])
+        likelihood = self.norm_const-0.5*(self.df+self.d)*torch.log(1+(1/self.df)*x_norms)
+        return thops.sum(likelihood, dim=[1])
+
+    def sample(self,z_shape, eps_std=None, device=None):
+        '''generate random variables of multivariate t distribution
+        Parameters
+        ----------
+        m : array_like
+            mean of random variable, length determines dimension of random variable
+        S : array_like
+            square array of covariance  matrix
+        df : int or float
+            degrees of freedom
+        n : int
+            number of observations, return random array will be (n, len(m))
+        Returns
+        -------
+        rvs : ndarray, (n, len(m))
+            each row is an independent draw of a multivariate t distributed
+            random variable
+        '''
+        #df=100
+        #import pdb; pdb.set_trace()
+        x_shape = torch.Size((z_shape[0], 1, z_shape[2]))
+        x = np.random.chisquare(self.df, x_shape)/self.df
+        x = np.tile(x, (1,z_shape[1],1))
+        x = torch.Tensor(x.astype(np.float32))
+        z = torch.normal(mean=torch.zeros(z_shape),std=torch.ones(z_shape) * eps_std)
+        
+        return (z/torch.sqrt(x)).to(device)
 
 class Split2d(nn.Module):
-    def __init__(self, num_channels):
+    def __init__(self, num_channels, distribution):
         super().__init__()
         print("Split2d num_channels:" + str(num_channels))
 
@@ -416,7 +461,7 @@ class Split2d(nn.Module):
             #print("forward Split2d input:" + str(input.shape))
             z1, z2 = thops.split_feature(input, "split")
             #mean, logs = self.split2d_prior(z1)
-            logdet = GaussianDiag.logp(z2) + logdet
+            logdet = self.distribution.logp(z2) + logdet
             return z1, cond, logdet
         else:
             z1 = input
@@ -424,7 +469,7 @@ class Split2d(nn.Module):
             #mean, logs = self.split2d_prior(z1)
             z2_shape = list(z1.shape)
             z2_shape[1] = self.num_channels-z1.shape[1]
-            z2 = GaussianDiag.sample(z2_shape, eps_std, device=input.device)
+            z2 = self.distribution.sample(z2_shape, eps_std, device=input.device)
             z = thops.cat_feature(z1, z2)
             return z, cond, logdet
 
