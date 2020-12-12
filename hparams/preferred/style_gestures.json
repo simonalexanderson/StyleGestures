@@ -12,7 +12,7 @@
     "network_model": "LSTM",
     "num_layers": 2,
     "LU_decomposed": true,
-    "distribution": "normal",
+    "distribution": "normal"
   },
   "Data": {
     "framerate": 20,
