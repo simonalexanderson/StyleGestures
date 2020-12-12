@@ -12,7 +12,9 @@ from docopt import docopt
 from torch.utils.data import DataLoader, Dataset
 from glow.builder import build
 from glow.trainer import Trainer
+from glow.generator import Generator
 from glow.config import JsonConfig
+from torch.utils.data import DataLoader
 
 if __name__ == "__main__":
     args = docopt(__doc__)
@@ -34,28 +36,31 @@ if __name__ == "__main__":
         os.makedirs(log_dir)
 		
     print("log_dir:" + str(log_dir))
-    data = dataset(hparams)
-    x_channels, cond_channels = data.get_train_dataset().n_channels()
+    
+    is_training = hparams.Infer.pre_trained == ""
+    
+    data = dataset(hparams, is_training)
+    x_channels, cond_channels = data.n_channels()
 
     # build graph
-
-    if hparams.Infer.pre_trained == "":
-        built = build(x_channels, cond_channels, hparams, True)
-    else:
-        built = build(x_channels, cond_channels, hparams, False)
-    
+    built = build(x_channels, cond_channels, hparams, is_training)
+            
+    if is_training:
+        # build trainer
+        trainer = Trainer(**built, data=data, log_dir=log_dir, hparams=hparams)
         
-    # build trainer
-    trainer = Trainer(**built, data=data, log_dir=log_dir, hparams=hparams)
-    if hparams.Infer.pre_trained == "":
-
         # train model
         trainer.train()
     else:
-        # generate from pre-trained model
+        # Synthesize a lot of data. 
+        generator = Generator(data, built['data_device'], log_dir, hparams)
         if "temperature" in hparams.Infer:
             temp = hparams.Infer.temperature
         else:
             temp = 1
-        for i in range(5):
-            trainer.generate_sample(eps_std=temp, counter=i)
+            
+        # We generate x times to get some different variations for each input
+        for i in range(5):            
+            generator.generate_sample(built['graph'],eps_std=temp, counter=i)
+            
+
