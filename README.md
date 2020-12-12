@@ -45,13 +45,19 @@ We also inculde an option to change the latent distribution from the standard Ga
 # References
 If you use our code or build on our method, please credit our publications:
 ```
-@article{henter2019moglow,
-  title={{M}o{G}low: {P}robabilistic and controllable motion synthesis using normalising flows},
-  author={Henter, Gustav Eje and Alexanderson, Simon and Beskow, Jonas},
-  journal={arXiv preprint arXiv:1905.06598},
-  year={2019}
+@article{henter2020moglow,
+  author = {Henter, Gustav Eje and Alexanderson, Simon and Beskow, Jonas},
+  doi = {10.1145/3414685.3417836},
+  journal = {ACM Transactions on Graphics},
+  number = {4},
+  pages = {236:1--236:14},
+  publisher = {ACM},
+  title = {{M}o{G}low: {P}robabilistic and controllable motion synthesis using normalising flows},
+  volume = {39},
+  year = {2020}
 }
-
+{% endraw %}
+  
 @article{alexanderson2020style,
   title={Style-controllable speech-driven gesture synthesis using normalising flows},
   author={Alexanderson, Simon and Henter, Gustav Eje and Kucherenko, Taras and Beskow, Jonas},
