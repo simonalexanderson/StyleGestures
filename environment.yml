@@ -14,4 +14,6 @@ dependencies:
   - pandas
   - joblib
   - librosa
-
+  - pip
+  - pip:
+    - transforms3d
