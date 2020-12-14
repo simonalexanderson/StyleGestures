@@ -11,20 +11,6 @@ if module_path not in sys.path:
     sys.path.append(module_path)
 from pymo.writers import *
 
-def fit_and_standardize(data):
-
-    shape = data.shape
-    flat = data.copy().reshape((shape[0]*shape[1], shape[2]))
-    scaler = StandardScaler().fit(flat)
-    scaled = scaler.transform(flat).reshape(shape)
-    return scaled, scaler
-
-def standardize(data, scaler):
-    shape = data.shape
-    flat = data.copy().reshape((shape[0]*shape[1], shape[2]))
-    scaled = scaler.transform(flat).reshape(shape)
-    return scaled
-
 def inv_standardize(data, scaler):      
     shape = data.shape
     flat = data.copy().reshape((shape[0]*shape[1], shape[2]))
@@ -62,9 +48,8 @@ class Trinity():
         else:
             self.train_dataset = None
             self.validation_dataset = None
-            #use this to generate test data for evaluation. NOTE: We standardise this here and not in preparation
+            #use this to generate test data for evaluation.
             test_input = np.load(os.path.join(data_root, 'test_input_'+str(hparams.Data.framerate)+'fps.npz'))['clips'].astype(np.float32)
-            test_input = standardize(test_input, self.input_scaler)
                        
         # make sure the test data is at least one batch size
         self.n_test = test_input.shape[0]
@@ -82,7 +67,7 @@ class Trinity():
         self.fps = hparams.Data.framerate
 
     def save_animation(self, control_data, motion_data, filename):
-        anim_clips = inv_standardize(motion_data[:,:,:], self.output_scaler)
+        anim_clips = inv_standardize(motion_data[:self.n_test,:,:], self.output_scaler)
         np.savez(filename + ".npz", clips=anim_clips)  
         self.write_bvh(anim_clips, filename)
         
