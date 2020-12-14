@@ -277,6 +277,8 @@ if __name__ == "__main__":
     train_motion, output_scaler = fit_and_standardize(train_motion)
     val_ctrl = standardize(val_ctrl, input_scaler)
     val_motion = standardize(val_motion, output_scaler)
+    dev_ctrl = standardize(dev_ctrl, input_scaler)
+    dev_motion = standardize(dev_motion, output_scaler)
     test_ctrl = standardize(test_ctrl, input_scaler)
     test_motion = standardize(test_motion, output_scaler)
         
