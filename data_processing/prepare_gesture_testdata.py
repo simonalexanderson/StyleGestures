@@ -6,6 +6,7 @@ import sys
 from shutil import copyfile
 from audio_features import extract_melspec
 import scipy.io.wavfile as wav
+import joblib as jl
 
             
 def import_and_pad(files, speech_data):
@@ -47,7 +48,7 @@ if __name__ == "__main__":
     data_root = '../data/GENEA/source'
     audiopath = os.path.join(data_root, 'test_audio')
     processed_dir = '../data/GENEA/processed'
-    test_dir = '../data/GENEA/processed/test_ds'
+    test_dir = '../data/GENEA/processed/test'
     
     files = []
     
@@ -87,6 +88,10 @@ if __name__ == "__main__":
     print("Preparing datasets...")
         
     test_ctrl = import_and_pad(files, speech_path)
+    
+    ctrl_scaler = jl.load(os.path.join(processed_dir, 'input_scaler.sav'))
+    test_ctrl = standardize(test_ctrl, ctrl_scaler)
+    
     np.savez(os.path.join(test_dir,f'test_input_{fps}fps.npz'), clips = test_ctrl)
     copyfile(os.path.join(processed_dir, f'data_pipe_{fps}fps.sav'), os.path.join(test_dir,f'data_pipe_{fps}fps.sav'))
     copyfile(os.path.join(processed_dir, 'input_scaler.sav'), os.path.join(test_dir,'input_scaler.sav'))
