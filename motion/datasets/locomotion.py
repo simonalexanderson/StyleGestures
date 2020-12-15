@@ -67,7 +67,7 @@ def create_synth_test_data(n_frames, nFeats, scaler):
 
 class Locomotion():
 
-    def __init__(self, hparams):
+    def __init__(self, hparams, is_training):
     
         data_root = hparams.Dir.data_root
 
@@ -111,6 +111,8 @@ class Locomotion():
         self.test_dataset = TestDataset(all_test_data[:,:,-3:], all_test_data[:,:,:-3])
         self.validation_dataset = MotionDataset(validation_data[:,:,-3:], validation_data[:,:,:-3], hparams.Data.seqlen, hparams.Data.n_lookahead, hparams.Data.dropout)
         self.seqlen = hparams.Data.seqlen
+        self.n_x_channels = all_test_data.shape[2]-3
+        self.n_cond_channels = self.n_x_channels*hparams.Data.seqlen + 3*(hparams.Data.seqlen + 1 + hparams.Data.n_lookahead)
 
     def save_animation(self, control_data, motion_data, filename):
         animation_data = np.concatenate((motion_data,control_data), axis=2)
@@ -123,6 +125,9 @@ class Locomotion():
             parents = np.array([0,1,2,3,4,1,6,7,8,1,10,11,12,12,14,15,16,12,18,19,20]) - 1
             plot_animation(anim_clip[i,self.seqlen:,:], parents, filename_, fps=self.frame_rate, axis_scale=60)
 
+    def n_channels(self):
+        return self.n_x_channels, self.n_cond_channels
+        
     def get_train_dataset(self):
         return self.train_dataset
         

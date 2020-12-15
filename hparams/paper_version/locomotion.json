@@ -11,7 +11,8 @@
         "flow_coupling": "affine",
         "network_model": "LSTM",
         "num_layers": 2,
-        "LU_decomposed": true
+        "LU_decomposed": true,
+		"distribution": "normal"
     },
     "Data" : {
         "framerate": 20,
